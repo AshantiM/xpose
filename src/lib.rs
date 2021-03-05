@@ -9,12 +9,19 @@ struct Xpose {
 
 #[proc_macro_attribute]
 pub fn xpose_me(_attr: TokenStream, item: TokenStream) -> TokenStream {
-    let input = syn::parse_macro_input!(item as syn::ItemFn);
-    let mut fold: Box<dyn syn::fold::Fold> = Box::new(Xpose {
-        fn_span: input.vis.span(),
-    });
-    let tokens = fold.fold_item_fn(input);
-    tokens.to_token_stream().into()
+    if cfg!(xpose_on)
+    {
+        let input = syn::parse_macro_input!(item as syn::ItemFn);
+        let mut fold: Box<dyn syn::fold::Fold> = Box::new(Xpose {
+            fn_span: input.vis.span(),
+        });
+        let tokens = fold.fold_item_fn(input);
+        tokens.to_token_stream().into()
+    }
+    else
+    {
+        item
+    }
 }
 
 impl syn::fold::Fold for Xpose {
