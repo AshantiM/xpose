@@ -30,6 +30,6 @@ impl syn::fold::Fold for Xpose {
         new_function.vis = Visibility::Public(VisPublic {
             pub_token: Token![pub](self.fn_span),
         });
-        function
+        new_function
     }
 }
