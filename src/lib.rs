@@ -9,7 +9,7 @@ struct Xpose {
 
 #[proc_macro_attribute]
 pub fn xpose_me(_attr: TokenStream, item: TokenStream) -> TokenStream {
-    if cfg!(xpose_on)
+    #[cfg(feature = "xpose_on")]
     {
         let input = syn::parse_macro_input!(item as syn::ItemFn);
         let mut fold: Box<dyn syn::fold::Fold> = Box::new(Xpose {
@@ -18,7 +18,7 @@ pub fn xpose_me(_attr: TokenStream, item: TokenStream) -> TokenStream {
         let tokens = fold.fold_item_fn(input);
         tokens.to_token_stream().into()
     }
-    else
+    #[cfg(not(feature = "xpose_on"))]
     {
         item
     }
